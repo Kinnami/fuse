@@ -3116,7 +3116,7 @@ static void fuse_lib_setattr(fuse_req_t req, fuse_ino_t ino, struct stat *attr,
 		if (!err && (valid & FUSE_SET_ATTR_CHGTIME)) {
 			struct timespec tv;
 			tv.tv_sec = (uint64_t)(attr->st_ctime);
-			tv.tv_nsec = (uint32_t)(attr->st_ctimensec);
+			tv.tv_nsec = (uint32_t)(attr-> /* st_ctimensec */ st_ctimespec.tv_nsec);	/* CJEC, 8-Feb-19: TODO: OSXFUSE BUG: Fix to compile successfully */
 			err = fuse_fs_setchgtime(f->fs, path, &tv);
 		}
 		if (!err && (valid & FUSE_SET_ATTR_CRTIME)) {

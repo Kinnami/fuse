@@ -87,7 +87,7 @@ static void convert_stat(const struct stat *stbuf, struct fuse_attr *attr)
 	attr->flags	= stbuf->st_flags;
 #ifdef _DARWIN_USE_64_BIT_INODE
 	attr->crtime	= stbuf->st_birthtime;
-	attr->crtimensec= (uint32_t)(stbuf->st_birthtimensec);
+	attr->crtimensec= (uint32_t)(stbuf->/* st_birthtimensec */ st_birthtimespec.tv_nsec);	/* CJEC, 8-Feb-19: TODO: OSXFUSE BUG: Fix to compile successfully */
 #else
 	attr->crtime	= (__u64)-1;
 	attr->crtimensec= (__u32)-1;
@@ -133,7 +133,7 @@ static void convert_attr(const struct fuse_setattr_in *attr, struct stat *stbuf)
 	stbuf->st_flags = attr->flags;
 
 	stbuf->st_ctime = attr->chgtime;
-	stbuf->st_ctimensec = attr->chgtimensec;
+	stbuf->/* st_ctimensec */ st_ctimespec.tv_nsec = attr->chgtimensec;		/* CJEC, 8-Feb-19: TODO: OSXFUSE BUG: Fix to compile successfully */
 
 	/* XXX: aaaaaaaaaaaargh */
 	stbuf->st_qspare[0] = attr->bkuptime;
